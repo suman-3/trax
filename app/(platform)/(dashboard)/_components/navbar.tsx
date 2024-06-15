@@ -14,17 +14,18 @@ export const Navbar = () => {
         <Button
           size="sm"
           className="rounded-sm hidden md:block h-auto py-1.5 px-2"
+          variant="primary"
         >
           Create
         </Button>
-        <Button className="rounded-sm bloack md:hidden">
+        <Button variant="primary" className="rounded-sm bloack md:hidden">
           <Plus className="h-4 w-4 shrink-0" />
         </Button>
       </div>
 
       <div className="ml-auto flex items-center gap-x-2">
         <OrganizationSwitcher
-        hidePersonal
+          hidePersonal
           afterCreateOrganizationUrl="/organization/:id"
           afterLeaveOrganizationUrl="/select-org"
           afterSelectOrganizationUrl="/organization/:id"
