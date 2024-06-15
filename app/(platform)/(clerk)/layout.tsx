@@ -5,7 +5,7 @@ const ClerkAuthLayout = ({children}:{children: React.ReactNode}) => {
   return (
   <>
   <Navbar/>
-  <div className='flex items-center justify-center w-full h-full pt-14 min-h-screen'>
+  <div className='flex items-center justify-center w-full h-full pt-10 min-h-screen'>
       {children}
   </div>
   </>
