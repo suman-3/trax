@@ -1,12 +1,14 @@
 "use client";
+import { useLocalStorage } from "usehooks-ts";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 
 import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { useLocalStorage } from "usehooks-ts";
+
+import { NavItem, Organization } from "./nav-item";
 
 interface SidebarProps {
   storagekey?: string;
@@ -54,7 +56,7 @@ export const Sidebar = ({ storagekey = "tx-sidebar-state" }: SidebarProps) => {
   return (
     <>
       <div className="font-medium text-xs flex items-center mb-1">
-        <span className="pl-4 text-sm">Workspaces</span>
+        <span className="pl-4 text-sm font-semibold">Workspaces</span>
         <Button
           asChild
           type="button"
@@ -74,7 +76,13 @@ export const Sidebar = ({ storagekey = "tx-sidebar-state" }: SidebarProps) => {
         className="space-y-2"
       >
         {userMemberships.data.map(({ organization }) => (
-          <p key={organization.id}>{organization.id}</p>
+          <NavItem
+            key={organization.id}
+            isActive={activeOrganization?.id === organization.id}
+            isExpanded={expanded[organization.id]}
+            organization={organization as Organization}
+            onExpand={onExpand}
+          />
         ))}
       </Accordion>
     </>
