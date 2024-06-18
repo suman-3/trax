@@ -31,9 +31,9 @@ export const FormPicker = ({ id, errors }: FormPickerProps) => {
 
         if (result && result.response) {
           const newImages = result.response as Array<Record<string, any>>;
-          // setImages(newImages); {TODO }
-        setImages(defaultImages);
-
+          setImages(newImages);
+          // {TODO }
+          // setImages(defaultImages);
         } else {
           console.error("Failed to get images from unsplash");
         }
@@ -92,9 +92,9 @@ export const FormPicker = ({ id, errors }: FormPickerProps) => {
               </div>
             )}
             <p
-            //   href={image.links.html}
+              //   href={image.links.html}
               className="opacity-0 group-hover:opacity-100 absolute bottom-0 w-full text-[10px] truncate text-white hover:underline p-1 bg-black/50 rounded-bl-sm rounded-br-sm"
-            //   target="_blank"
+              //   target="_blank"
             >
               {image.user.name}
             </p>
