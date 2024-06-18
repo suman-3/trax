@@ -8,7 +8,16 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Board{
-  id String @id @default(uuid())
-  title String
+model Board {
+  id            String @id @default(uuid())
+  orgId         String
+  title         String
+  imageId       String
+  imageThumbUrl String @db.LongText
+  imageFullUrl  String @db.LongText
+  imageUserName String @db.LongText
+  imageLinkHTML String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { defaultImages } from "@/constants/images";
 import Link from "next/link";
+import { FormErrors } from "./form-errors";
 
 interface FormPickerProps {
   id: string;
@@ -68,6 +69,15 @@ export const FormPicker = ({ id, errors }: FormPickerProps) => {
               setSelectedImageId(image.id);
             }}
           >
+            <input
+              type="radio"
+              id={id}
+              name={id}
+              className="hidden"
+              checked={selectedImageId === image.id}
+              disabled={pending}
+              value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`}
+            />
             <Image
               src={image.urls.thumb}
               fill
@@ -79,16 +89,17 @@ export const FormPicker = ({ id, errors }: FormPickerProps) => {
                 <Check className="h-4 w-4 text-white" />
               </div>
             )}
-            <Link
-              href={image.links.html}
+            <p
+            //   href={image.links.html}
               className="opacity-0 group-hover:opacity-100 absolute bottom-0 w-full text-[10px] truncate text-white hover:underline p-1 bg-black/50 rounded-bl-sm rounded-br-sm"
-              target="_blank"
+            //   target="_blank"
             >
               {image.user.name}
-            </Link>
+            </p>
           </div>
         ))}
       </div>
+      <FormErrors id="image" errors={errors} />
     </div>
   );
 };
