@@ -1,7 +1,6 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-
 import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
 
@@ -18,50 +17,65 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (error: any) {
-    return new NextResponse("webhook error", { status: 400 });
+    console.error("Webhook signature verification failed:", error.message);
+    return new NextResponse("Webhook error: Invalid signature", { status: 400 });
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
 
-  if (event.type === "checkout.session.completed") {
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    );
+  try {
+    switch (event.type) {
+      case "checkout.session.completed":
+        await handleCheckoutSessionCompleted(session);
+        break;
 
-    if (!session?.metadata?.orgId) {
-      return new NextResponse("Org ID is required", { status: 400 });
+      case "invoice.payment_succeeded":
+        await handleInvoicePaymentSucceeded(session);
+        break;
+
+      default:
+        console.warn(`Unhandled event type: ${event.type}`);
     }
-
-    await db.orgSubscription.create({
-      data: {
-        orgId: session?.metadata?.orgId,
-        stripeSubscriptionId: subscription.id,
-        stripeCustomerId: subscription.customer as string,
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000
-        ),
-      },
-    });
-  }
-
-  if (event.type === "invoice.payment_succeeded") {
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    );
-
-    await db.orgSubscription.update({
-      where: {
-        stripeCustomerId: subscription.id,
-      },
-      data: {
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000
-        ),
-      },
-    });
+  } catch (error: any) {
+    console.error("Error handling event:", error.message);
+    return new NextResponse("Webhook error", { status: 500 });
   }
 
   return new NextResponse(null, { status: 200 });
+}
+
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+  const subscription = await stripe.subscriptions.retrieve(
+    session.subscription as string
+  );
+
+  if (!session.metadata?.orgId) {
+    throw new Error("Org ID is required");
+  }
+
+  await db.orgSubscription.create({
+    data: {
+      orgId: session.metadata.orgId,
+      stripeSubscriptionId: subscription.id,
+      stripeCustomerId: subscription.customer as string,
+      stripePriceId: subscription.items.data[0].price.id,
+      stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+    },
+  });
+}
+
+async function handleInvoicePaymentSucceeded(session: Stripe.Checkout.Session) {
+  const subscription = await stripe.subscriptions.retrieve(
+    session.subscription as string
+  );
+
+  await db.orgSubscription.update({
+    where: {
+      stripeCustomerId: subscription.customer as string,
+    },
+    data: {
+      stripePriceId: subscription.items.data[0].price.id,
+      stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+    },
+  });
 }
