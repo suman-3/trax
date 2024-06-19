@@ -68,14 +68,15 @@ enum ACTION {
 }
 
 model AuditLog {
-  id         String      @id @default(uuid())
-  orgId      String
-  action     ACTION
-  entityId   String
-  entityType ENTITY_TYPE
-  userId     String
-  userImage  String      @db.LongText
-  userName   String      @db.LongText
+  id          String      @id @default(uuid())
+  orgId       String
+  action      ACTION
+  entityId    String
+  entityType  ENTITY_TYPE
+  entityTitle String
+  userId      String
+  userImage   String      @db.LongText
+  userName    String      @db.LongText
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
