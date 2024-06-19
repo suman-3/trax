@@ -31,10 +31,6 @@ export async function GET(
       },
     });
 
-    if (!card) {
-      return new NextResponse("Not Found", { status: 404 });
-    }
-
     return NextResponse.json(card);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
