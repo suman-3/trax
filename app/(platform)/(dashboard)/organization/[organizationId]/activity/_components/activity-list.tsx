@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { ActivityItem } from "@/components/activity-item";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea } from "@/components/ui/scroll-area";
 export const ActivityList = async () => {
   const { orgId } = auth();
 
@@ -20,7 +21,8 @@ export const ActivityList = async () => {
     },
   });
   return (
-    <ol className="space-y-4 mt-4">
+   <ScrollArea className="w-full h-[72vh] py-5">
+     <ol className="space-y-4 mt-4">
       <p
         className={cn(
           "hidden last:block text-xs text-center text-muted-foreground"
@@ -32,6 +34,7 @@ export const ActivityList = async () => {
         <ActivityItem data={log} key={log.id} />
       ))}
     </ol>
+   </ScrollArea>
   );
 };
 

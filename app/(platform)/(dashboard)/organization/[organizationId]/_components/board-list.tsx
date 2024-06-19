@@ -70,13 +70,17 @@ export const BoardList = async () => {
         </FromPopover>
 
         {/* TODO: For mobile section create board button div style and position to be fix */}
-        <FromPopover side="top" align="start" sideOffset={10}>
+        <FromPopover side="bottom" align="start" sideOffset={10}>
           <div
             className="aspect-video relative h-full w-full bg-muted rounded-sm flex md:hidden flex-col gap-y-1 items-center justify-center hover:opacity-75 transition"
             role="button"
           >
             <p className="text-sm">Create new board</p>
-            <span className="text-xs">5 remaining</span>
+            <span className="text-xs">
+            {isPro
+                ? "Unlimited"
+                : `${MAX_FREE_BOARDS - avaliableCount} remaining`}
+            </span>
             <Hint
               sideOffset={40}
               description={`

@@ -10,7 +10,7 @@ const organizationPage = async () => {
 
 
   return (
-    <div className="w-full mb-20">
+    <div className="w-full mb-20 h-[90vh] md:h-auto">
       <Info isPro={isPro} />
       <Separator className="my-4" />
       <div className="px-2 md:px-4">
